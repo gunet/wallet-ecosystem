@@ -1,8 +1,8 @@
 const locale = {
 	en: {
 		header: {
-			title: "National Verifiable ID Issuer",
-			subtitle: "Receive your verifiable ID",
+			title: "National PID Issuer",
+			subtitle: "Receive your PID",
 		},
 		plainHeader: {
 			title: "National Authentication Service",
