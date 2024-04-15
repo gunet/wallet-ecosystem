@@ -1,7 +1,7 @@
 const locale = {
 	en: {
 		header: {
-			title: "National PID Issuer",
+			title: "DC4EU PID Issuer",
 			subtitle: "Receive your PID",
 		},
 		plainHeader: {
@@ -20,10 +20,10 @@ const locale = {
 			emailForOrgs: "E-mail for Institutions"
 		},
 		index: {
-			header: "National PID Issuer",
+			header: "DC4EU PID Issuer",
 			phrase: "I want to receive my PID",
 			proceed: "Proceed",
-			heading: "National PID Issuer",
+			heading: "DC4EU PID Issuer",
 			paragraph: "This is a portal where citizens can receive their PID in their wallet. To proceed you must first have an EUDI wallet from a provider of your choice.",
 			demo_text: "This is a National PID implementation for demonstration puproses. The purpose of this application is to issue a Verifiable PID for authentication and identification purposes."
 		},
