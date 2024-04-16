@@ -51,6 +51,7 @@ export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol 
 					{ name: "First Name", value: vid.claims.firstName },
 					{ name: "Personal Identifier", value: vid.claims.personalIdentifier },
 					{ name: "Date of Birth", value: vid.claims.birthdate },
+					{ name: "Expiration Date", value: vid.claims.validityPeriod.endingDate },
 				];
 				const rowsObject: CategorizedRawCredentialView = { rows };
 				
