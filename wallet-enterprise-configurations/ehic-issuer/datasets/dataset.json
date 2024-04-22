@@ -2354,13 +2354,13 @@
 				"username": "juraj.belicak",
 				"password": "juraj.belicak",
 				"uid": "83",
-				"personalIdentifier": "27610850"
+				"personalIdentifier": "48979143"
 			},
 			"claims": {
 				"firstName": "Beli\u010d\u00e1k",
 				"familyName": "Juraj",
 				"birthdate": "1977-04-21",
-				"personalIdentifier": "27610850",
+				"personalIdentifier": "48979143",
 				"socialSecurityIdentification": {
 					"ssn": "48979143"
 				},
@@ -2371,7 +2371,7 @@
 				"documentId": "80246802460003703557",
 				"competentInstitution": {
 					"competentInstitutionId": "RASP",
-					"competentInstitutionName": "Soci\u00e1lna pois\u0165ov\u0148a / Social Insurance Office",
+					"competentInstitutionName": "Socffice",
 					"competentInstitutionCountryCode": "SK"
 				}
 			}
@@ -2381,13 +2381,13 @@
 				"username": "mathias.landeck",
 				"password": "mathias.landeck",
 				"uid": "84",
-				"personalIdentifier": "82506974"
+				"personalIdentifier": "41054594"
 			},
 			"claims": {
 				"firstName": "Landeck",
 				"familyName": "Mathias",
 				"birthdate": "1983-03-22",
-				"personalIdentifier": "82506974",
+				"personalIdentifier": "41054594",
 				"socialSecurityIdentification": {
 					"ssn": "41054594"
 				},
@@ -2408,13 +2408,13 @@
 				"username": "jakub.zacka",
 				"password": "jakub.zacka",
 				"uid": "85",
-				"personalIdentifier": "64681417"
+				"personalIdentifier": "73625166"
 			},
 			"claims": {
 				"firstName": "ZA\u010cKA",
 				"familyName": "Jakub",
 				"birthdate": "1992-09-23",
-				"personalIdentifier": "64681417",
+				"personalIdentifier": "73625166",
 				"socialSecurityIdentification": {
 					"ssn": "73625166"
 				},
@@ -2435,13 +2435,13 @@
 				"username": "thomas.ebbinghaus",
 				"password": "thomas.ebbinghaus",
 				"uid": "86",
-				"personalIdentifier": "22708966"
+				"personalIdentifier": "66887200"
 			},
 			"claims": {
 				"firstName": "Ebbinghaus",
 				"familyName": "Thomas",
 				"birthdate": "1965-07-24",
-				"personalIdentifier": "22708966",
+				"personalIdentifier": "66887200",
 				"socialSecurityIdentification": {
 					"ssn": "66887200"
 				},
@@ -2454,33 +2454,6 @@
 					"competentInstitutionId": "DRV70001",
 					"competentInstitutionName": "Deutsche Rentenversicherung Bund",
 					"competentInstitutionCountryCode": "DE"
-				}
-			}
-		},
-		{
-			"authentication": {
-				"username": "marta.pardyka",
-				"password": "marta.pardyka",
-				"uid": "87",
-				"personalIdentifier": "44467837"
-			},
-			"claims": {
-				"firstName": "Pardyka",
-				"familyName": "Marta",
-				"birthdate": "1968-01-25",
-				"personalIdentifier": "44467837",
-				"socialSecurityIdentification": {
-					"ssn": "27943938"
-				},
-				"validityPeriod": {
-					"startingDate": "2023-07-23",
-					"endingDate": "2024-01-13"
-				},
-				"documentId": "80246802460003955071",
-				"competentInstitution": {
-					"competentInstitutionId": "CA17",
-					"competentInstitutionName": "Social Insurance Institution Insurance and Contributions Department",
-					"competentInstitutionCountryCode": "PL"
 				}
 			}
 		}
