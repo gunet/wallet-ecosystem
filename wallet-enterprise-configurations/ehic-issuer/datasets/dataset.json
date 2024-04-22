@@ -1,5 +1,32 @@
 {
   "users": [
+		{
+			"authentication": {
+				"username": "john.doe",
+				"password": "john.doe",
+				"uid": "111111",
+				"personalIdentifier": "MM1119191K"
+			},
+			"claims": {
+				"firstName": "John",
+				"familyName": "Doe",
+				"birthdate": "1982-10-17",
+				"personalIdentifier": "MM1119191K",
+				"socialSecurityIdentification": {
+					"ssn": "123456789"
+				},
+				"validityPeriod": {
+					"startingDate": "2024-01-01",
+					"endingDate": "2025-12-31"
+				},
+				"documentId": "80246803838301",
+				"competentInstitution": {
+					"competentInstitutionId": "1100",
+					"competentInstitutionName": "ÖGK",
+					"competentInstitutionCountryCode": "AT"
+				}
+			}
+		},
     {
       "authentication": {
         "username": "eminem",

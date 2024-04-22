@@ -2,6 +2,68 @@
   "users": [
     {
       "authentication": {
+        "username": "john.doe",
+        "password": "john.doe",
+        "uid": "111111",
+        "personalIdentifier": "MM1119191K",
+        "email": "nvoutsin@gunet.gr"
+      },
+      "claims": {
+        "firstName": "John",
+        "familyName": "Doe",
+        "birthdate": "1982-10-17",
+        "personalIdentifier": "MM1119191K",
+        "socialSecurityIdentification": {
+          "ssn": "123456789"
+        },
+        "nationality": {
+          "nationalityCode": "US"
+        },
+        "employer": {
+          "employmentType": "01",
+          "name": "Fake Employer",
+          "employerId": "ACME789",
+          "typeOfId": "02"
+        },
+        "address": {
+          "street": "8 Mile Road",
+          "town": "Detroit",
+          "postalCode": "48221",
+          "countryCode": "US"
+        },
+        "placeOfWork": {
+          "companyName": "Fake Employers AE",
+          "flagBaseHomeState": "MI",
+          "companyId": "SHADY789",
+          "typeOfId": "02",
+          "street": "8 Mile Road",
+          "town": "Detroit",
+          "postalCode": "48221",
+          "countryCode": "US"
+        },
+        "decisionOnApplicableLegislation": {
+          "decisionOnMSWhoseLegislationApplies": {
+            "memberStateWhoseLegislationIsToBeApplied": "US",
+            "transitionalRulesApplyAsPerTheRegulation": "NO"
+          },
+          "validityPeriod": {
+            "startingDate": "2024-01-01",
+            "endingDate": "2024-04-22"
+          }
+        },
+        "statusConfirmation": {
+          "statusCode": "01"
+        },
+        "documentId": "188ae95b-be78-471c-af1a-591d3d1",
+        "competentInstitution": {
+          "competentInstitutionId": "US123",
+          "competentInstitutionName": "Social Security Administration",
+          "competentInstitutionCountryCode": "US"
+        }
+      }
+    },
+    {
+      "authentication": {
         "username": "eminem",
         "password": "slimshady99",
         "uid": "EM123UID",
@@ -51,15 +113,15 @@
             "endingDate": "2024-12-31"
           }
         },
-				"statusConfirmation": {
-					"statusCode": "01"
-				},
-				"documentId": "188ae95b-be78-471c-af1a-591dbdab33d1",
-				"competentInstitution": {
-					"competentInstitutionId": "US123",
-					"competentInstitutionName": "Social Security Administration",
-					"competentInstitutionCountryCode": "US"
-				}
+        "statusConfirmation": {
+          "statusCode": "01"
+        },
+        "documentId": "188ae95b-be78-471c-af1a-591dbdab33d1",
+        "competentInstitution": {
+          "competentInstitutionId": "US123",
+          "competentInstitutionName": "Social Security Administration",
+          "competentInstitutionCountryCode": "US"
+        }
       }
     },
     {
@@ -74,7 +136,7 @@
         "firstName": "Leonardo",
         "familyName": "DiCaprio",
         "birthdate": "1974-11-11",
-				"personalIdentifier": "LD19741111DC",
+        "personalIdentifier": "LD19741111DC",
         "socialSecurityIdentification": {
           "ssn": "234567890LD"
         },
@@ -108,20 +170,20 @@
             "memberStateWhoseLegislationIsToBeApplied": "US",
             "transitionalRulesApplyAsPerTheRegulation": "NO"
           },
-					"validityPeriod": {
-						"startingDate": "2024-01-01",
-						"endingDate": "2024-12-31"
-					}
+          "validityPeriod": {
+            "startingDate": "2024-01-01",
+            "endingDate": "2024-12-31"
+          }
         },
-				"statusConfirmation": {
-					"statusCode": "01"
-				},
-				"documentId": "1a8be95c-bd79-471d-af2b-592dbda33e2d",
-				"competentInstitution": {
-					"competentInstitutionId": "US456",
-					"competentInstitutionName": "Internal Revenue Service",
-					"competentInstitutionCountryCode": "US"
-				}
+        "statusConfirmation": {
+          "statusCode": "01"
+        },
+        "documentId": "1a8be95c-bd79-471d-af2b-592dbda33e2d",
+        "competentInstitution": {
+          "competentInstitutionId": "US456",
+          "competentInstitutionName": "Internal Revenue Service",
+          "competentInstitutionCountryCode": "US"
+        }
       }
     },
     {

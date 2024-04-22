@@ -1,5 +1,24 @@
 {
   "users": [
+		{
+			"authentication": {
+				"username": "john.doe",
+				"password": "john.doe",
+				"uid": "111111",
+				"personalIdentifier": "MM1119191K"
+			},
+			"claims": {
+				"firstName": "John",
+				"familyName": "Doe",
+				"birthdate": "1982-10-17",
+				"personalIdentifier": "MM1119191K",
+				"referenceId": "4121111111",
+				"validityPeriod": {
+					"startingDate": "2014-02-02",
+					"endingDate": "2024-06-30"
+				}
+			}
+		},
     {
       "authentication": {
         "username": "eminem",
