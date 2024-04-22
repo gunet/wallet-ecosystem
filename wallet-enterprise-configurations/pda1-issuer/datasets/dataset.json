@@ -2,6 +2,68 @@
   "users": [
     {
       "authentication": {
+        "username": "john.doe",
+        "password": "john.doe",
+        "uid": "111111",
+        "personalIdentifier": "MM1119191K",
+        "email": "nvoutsin@gunet.gr"
+      },
+      "claims": {
+        "firstName": "John",
+        "familyName": "Doe",
+        "birthdate": "1982-10-17",
+        "personalIdentifier": "MM1119191K",
+        "socialSecurityIdentification": {
+          "ssn": "123456789"
+        },
+        "nationality": {
+          "nationalityCode": "US"
+        },
+        "employer": {
+          "employmentType": "01",
+          "name": "Fake Employer",
+          "employerId": "ACME789",
+          "typeOfId": "02"
+        },
+        "address": {
+          "street": "8 Mile Road",
+          "town": "Detroit",
+          "postalCode": "48221",
+          "countryCode": "US"
+        },
+        "placeOfWork": {
+          "companyName": "Fake Employers AE",
+          "flagBaseHomeState": "MI",
+          "companyId": "SHADY789",
+          "typeOfId": "02",
+          "street": "8 Mile Road",
+          "town": "Detroit",
+          "postalCode": "48221",
+          "countryCode": "US"
+        },
+        "decisionOnApplicableLegislation": {
+          "decisionOnMSWhoseLegislationApplies": {
+            "memberStateWhoseLegislationIsToBeApplied": "US",
+            "transitionalRulesApplyAsPerTheRegulation": "NO"
+          },
+          "validityPeriod": {
+            "startingDate": "2024-01-01",
+            "endingDate": "2024-04-22"
+          }
+        },
+        "statusConfirmation": {
+          "statusCode": "01"
+        },
+        "documentId": "188ae95b-be78-471c-af1a-591d3d1",
+        "competentInstitution": {
+          "competentInstitutionId": "US123",
+          "competentInstitutionName": "Social Security Administration",
+          "competentInstitutionCountryCode": "US"
+        }
+      }
+    },
+    {
+      "authentication": {
         "username": "eminem",
         "password": "slimshady99",
         "uid": "EM123UID",
@@ -51,15 +113,15 @@
             "endingDate": "2024-12-31"
           }
         },
-				"statusConfirmation": {
-					"statusCode": "01"
-				},
-				"documentId": "188ae95b-be78-471c-af1a-591dbdab33d1",
-				"competentInstitution": {
-					"competentInstitutionId": "US123",
-					"competentInstitutionName": "Social Security Administration",
-					"competentInstitutionCountryCode": "US"
-				}
+        "statusConfirmation": {
+          "statusCode": "01"
+        },
+        "documentId": "188ae95b-be78-471c-af1a-591dbdab33d1",
+        "competentInstitution": {
+          "competentInstitutionId": "US123",
+          "competentInstitutionName": "Social Security Administration",
+          "competentInstitutionCountryCode": "US"
+        }
       }
     },
     {
@@ -74,7 +136,7 @@
         "firstName": "Leonardo",
         "familyName": "DiCaprio",
         "birthdate": "1974-11-11",
-				"personalIdentifier": "LD19741111DC",
+        "personalIdentifier": "LD19741111DC",
         "socialSecurityIdentification": {
           "ssn": "234567890LD"
         },
@@ -107,21 +169,21 @@
           "decisionOnMSWhoseLegislationApplies": {
             "memberStateWhoseLegislationIsToBeApplied": "US",
             "transitionalRulesApplyAsPerTheRegulation": "NO"
+          },
+          "validityPeriod": {
+            "startingDate": "2024-01-01",
+            "endingDate": "2024-12-31"
           }
         },
-				"validityPeriod": {
-					"startingDate": "2024-01-01",
-					"endingDate": "2024-12-31"
-				},
-				"statusConfirmation": {
-					"statusCode": "01"
-				},
-				"documentId": "1a8be95c-bd79-471d-af2b-592dbda33e2d",
-				"competentInstitution": {
-					"competentInstitutionId": "US456",
-					"competentInstitutionName": "Internal Revenue Service",
-					"competentInstitutionCountryCode": "US"
-				}
+        "statusConfirmation": {
+          "statusCode": "01"
+        },
+        "documentId": "1a8be95c-bd79-471d-af2b-592dbda33e2d",
+        "competentInstitution": {
+          "competentInstitutionId": "US456",
+          "competentInstitutionName": "Internal Revenue Service",
+          "competentInstitutionCountryCode": "US"
+        }
       }
     },
     {
@@ -5399,14 +5461,14 @@
         "username": "juraj.belicak",
         "password": "juraj.belicak",
         "uid": "83",
-        "personalIdentifier": "27610850",
+        "personalIdentifier": "48979143",
         "email": "juraj.belicak@socpoist.sk"
       },
       "claims": {
         "firstName": "Beli\u010d\u00e1k",
         "familyName": "Juraj",
         "birthdate": "1977-04-21",
-        "personalIdentifier": "27610850",
+        "personalIdentifier": "48979143",
         "socialSecurityIdentification": {
           "ssn": "48979143"
         },
@@ -5461,14 +5523,14 @@
         "username": "mathias.landeck",
         "password": "mathias.landeck",
         "uid": "84",
-        "personalIdentifier": "82506974",
+        "personalIdentifier": "41054594",
         "email": "Mathias.Landeck@drv-bund.de"
       },
       "claims": {
         "firstName": "Landeck",
         "familyName": "Mathias",
         "birthdate": "1983-03-22",
-        "personalIdentifier": "82506974",
+        "personalIdentifier": "41054594",
         "socialSecurityIdentification": {
           "ssn": "41054594"
         },
@@ -5523,14 +5585,14 @@
         "username": "jakub.zacka",
         "password": "jakub.zacka",
         "uid": "85",
-        "personalIdentifier": "64681417",
+        "personalIdentifier": "73625166",
         "email": "jakub.zacka@socpoist.sk"
       },
       "claims": {
         "firstName": "ZA\u010cKA",
         "familyName": "Jakub",
         "birthdate": "1992-09-23",
-        "personalIdentifier": "64681417",
+        "personalIdentifier": "73625166",
         "socialSecurityIdentification": {
           "ssn": "73625166"
         },
@@ -5585,14 +5647,14 @@
         "username": "thomas.ebbinghaus",
         "password": "thomas.ebbinghaus",
         "uid": "86",
-        "personalIdentifier": "22708966",
+        "personalIdentifier": "66887200",
         "email": "thomas.ebbinghaus@drv-bund.de"
       },
       "claims": {
         "firstName": "Ebbinghaus",
         "familyName": "Thomas",
         "birthdate": "1965-07-24",
-        "personalIdentifier": "22708966",
+        "personalIdentifier": "66887200",
         "socialSecurityIdentification": {
           "ssn": "66887200"
         },
@@ -5639,68 +5701,6 @@
           "competentInstitutionId": "DRV70001",
           "competentInstitutionName": "Deutsche Rentenversicherung Bund",
           "competentInstitutionCountryCode": "DE"
-        }
-      }
-    },
-    {
-      "authentication": {
-        "username": "marta.pardyka",
-        "password": "marta.pardyka",
-        "uid": "87",
-        "personalIdentifier": "44467837",
-        "email": "marta.pardyka@zus.pl"
-      },
-      "claims": {
-        "firstName": "Pardyka",
-        "familyName": "Marta",
-        "birthdate": "1968-01-25",
-        "personalIdentifier": "44467837",
-        "socialSecurityIdentification": {
-          "ssn": "27943938"
-        },
-        "nationality": {
-          "nationalityCode": "PL"
-        },
-        "employer": {
-          "employmentType": 1,
-          "name": "Astral Insurance Brokers Ltd",
-          "employerId": 87,
-          "typeOfId": 2
-        },
-        "address": {
-          "street": "Moorstr. 27",
-          "town": "Lohne (Oldenburg)",
-          "postalCode": "49393",
-          "countryCode": "EU"
-        },
-        "placeOfWork": {
-          "companyName": "Workshop DC4EU",
-          "flagBaseHomeState": "",
-          "companyId": 1,
-          "typeOfId": 2,
-          "street": "Via Ciro il Grande 26",
-          "town": "Roma RM",
-          "postalCode": "149",
-          "countryCode": "IT"
-        },
-        "decisionOnApplicableLegislation": {
-          "decisionOnMSWhoseLegislationApplies": {
-            "memberStateWhoseLegislationIsToBeApplied": "EU",
-            "transitionalRulesApplyAsPerTheRegulation": "No"
-          },
-          "validityPeriod": {
-            "startingDate": "2024-04-05",
-            "endingDate": "2024-04-20"
-          }
-        },
-        "statusConfirmation": {
-          "statusCode": 1
-        },
-        "documentId": "46eed904-6f01-4c1b-988e-340a5865533d",
-        "competentInstitution": {
-          "competentInstitutionId": "CA17",
-          "competentInstitutionName": "Social Insurance Institution Insurance and Contributions Department",
-          "competentInstitutionCountryCode": "PL"
         }
       }
     }
