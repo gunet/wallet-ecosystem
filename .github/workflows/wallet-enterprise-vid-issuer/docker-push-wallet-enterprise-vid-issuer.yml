@@ -1,0 +1,18 @@
+name: Build Docker image
+on:
+  push:
+    branches-ignore:
+      - dc4eu-rome
+  pull_request:
+
+jobs:
+  push-vid:
+    permissions:
+      contents: read
+      packages: read
+
+    uses: gunet/wallet-ecosystem/.github/workflows/docker-build-push.yml@dc-workflow
+    with:
+      image-tag: ghcr.io/gunet/wallet-enterprise-vid-issuer:latest
+      docker-push: true
+      dockerfile-path: ./wallet-enterprise-configurations/vid-issuer/Dockerfile
