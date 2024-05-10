@@ -20,24 +20,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: 'Login to GitHub Container Registry'
-      uses: docker/login-action@v2
-      with:
-         registry: ghcr.io
-         username: ${{github.actor}}
-         password: ${{secrets.GITHUB_TOKEN}}
+      - name: Check actor
+        shell: bash
+        run: |
+          echo "Actor: ${{ github.actor }}" &&  echo "Actor: ${{ secrets.GITHUB_TOKEN }}" 
 
-    - name: Set up .npmrc to access GitHub NPM registry
-      uses: gunet/wallet-ecosystem/.github/actions/setup-npmrc@dc-workflow
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
-    - uses: docker/build-push-action@v3
-      with:
-        context: .
-        file: ${{ inputs.dockerfile-path }}
-        push: ${{ inputs.docker-push }}
-        tags: ${{ inputs.image-tag }}
-        secret-files: |
-          npmrc=./.npmrc
+      - name: Set up .npmrc to access GitHub NPM registry
+        uses: gunet/wallet-ecosystem/.github/actions/setup-npmrc@dc-workflow
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ${{ inputs.dockerfile-path }}
+          push: ${{ inputs.docker-push }}
+          tags: ${{ inputs.image-tag }}
+          secret-files: |
+            npmrc=./.npmrc
