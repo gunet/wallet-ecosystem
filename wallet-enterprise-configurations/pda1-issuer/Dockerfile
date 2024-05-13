@@ -11,7 +11,7 @@ COPY ./wallet-enterprise-configurations/pda1-issuer/views/index.pug views/index.
 COPY ./wallet-enterprise-configurations/pda1-issuer/views/header.pug views/header.pug
 
 RUN --mount=type=secret,id=npmrc,required=true,target=./.npmrc,uid=1000 \
-    yarn cache clean && yarn install && yarn build
+    yarn cache clean && ls -l && yarn install && yarn build
 
 # Production stage
 FROM node:16-bullseye-slim AS production
