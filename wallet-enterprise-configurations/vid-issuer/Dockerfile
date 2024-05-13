@@ -2,8 +2,6 @@
 FROM node:16-bullseye-slim AS builder
 WORKDIR /app
 
-
-
 COPY wallet-enterprise/ .
 RUN rm -rf src/configuration/
 COPY ./wallet-enterprise-configurations/vid-issuer/src/configuration/ src/configuration/
@@ -20,7 +18,6 @@ FROM node:16-bullseye-slim AS production
 WORKDIR /app
 
 COPY --from=builder /app/package.json .
-COPY --from=builder /app/.npmrc .
 COPY --from=builder /app/dist/ ./dist/
 COPY --from=builder /app/public/ ./public/
 COPY --from=builder /app/views/ ./views/

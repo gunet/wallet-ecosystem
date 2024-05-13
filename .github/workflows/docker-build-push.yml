@@ -14,17 +14,15 @@ on:
       dockerfile-path:
         type: string
         required: true
+    # secrets:
+    #   GITHUB_TOKEN:
+    #     required: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check actor
-        shell: bash
-        run: |
-          echo "Actor: ${{ github.actor }}" &&  echo "Actor: ${{ secrets.GITHUB_TOKEN }}" 
-
       - uses: actions/checkout@v3
       - name: 'Login to GitHub Container Registry'
         uses: docker/login-action@v2

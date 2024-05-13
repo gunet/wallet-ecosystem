@@ -18,7 +18,6 @@ FROM node:16-bullseye-slim AS production
 WORKDIR /app
 
 COPY --from=builder /app/package.json .
-COPY --from=builder /app/.npmrc .
 COPY --from=builder /app/dist/ ./dist/
 COPY --from=builder /app/public/ ./public/
 COPY --from=builder /app/views/ ./views/
