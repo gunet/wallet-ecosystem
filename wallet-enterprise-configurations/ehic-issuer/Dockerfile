@@ -1,5 +1,5 @@
 # Builder stage
-FROM node:16-bullseye-slim AS builder
+FROM ghcr.io/gunet/wallet-enterprise:base AS builder
 WORKDIR /app
 
 COPY wallet-enterprise/ .

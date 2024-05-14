@@ -10,11 +10,10 @@ jobs:
   push-ehic:
     permissions:
       contents: read
-      packages: read
+      packages: write
 
     uses: ./.github/workflows/docker-build-push.yml
-    # secrets:
-    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    secrets: inherit
     with:
       image-tag: ghcr.io/gunet/wallet-enterprise-ehic-issuer:latest
       docker-push: true

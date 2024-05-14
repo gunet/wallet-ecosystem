@@ -10,11 +10,10 @@ jobs:
   push-pda1:
     permissions:
       contents: read
-      packages: read
+      packages: write
 
     uses: ./.github/workflows/docker-build-push.yml
-    # secrets:
-    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    secrets: inherit
     with:
       image-tag: ghcr.io/gunet/wallet-enterprise-pda1-issuer:latest
       docker-push: true
