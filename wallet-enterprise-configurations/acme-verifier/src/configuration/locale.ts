@@ -30,7 +30,7 @@ const locale = {
 			error: {
 				emptyUsername: "Username is empty",
 				emptyPassword: "Password is empty",
-				invalidCredentials: "Invalid credentials",
+				invalidCredentials: "Invalid Login Data",
 				networkError: "Network error occured",
 			}
 		}
