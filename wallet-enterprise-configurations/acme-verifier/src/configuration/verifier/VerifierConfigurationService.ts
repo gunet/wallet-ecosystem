@@ -278,6 +278,28 @@ const customVerifiableIdSdJwtPresentationDefinition = {
 	]
 }
 
+const customEHICSdJwtPresentationDefinition = {
+	"id": "CustomEHIC",
+	"title": "Custom EHIC",
+	"description": "Selectable Fields:...",
+	"selectable": true,
+	"format": { "vc+sd-jwt": { alg: ['ES256'] }, jwt_vc_json: { alg: ['ES256'] }, jwt_vp: { alg: ['ES256'] } },
+	"input_descriptors": [
+		europeanHealthInsuranceCardDescriptor
+	]
+}
+
+const customPDA1SdJwtPresentationDefinition = {
+	"id": "CustomPDA1",
+	"title": "Custom PDA1",
+	"description": "Selectable Fields:...",
+	"selectable": true,
+	"format": { "vc+sd-jwt": { alg: ['ES256'] }, jwt_vc_json: { alg: ['ES256'] }, jwt_vp: { alg: ['ES256'] } },
+	"input_descriptors": [
+		Pda1Descriptor
+	]
+}
+
 @injectable()
 export class VerifierConfigurationService implements VerifierConfigurationInterface {
 
@@ -285,6 +307,8 @@ export class VerifierConfigurationService implements VerifierConfigurationInterf
 	getPresentationDefinitions(): PresentationDefinitionTypeWithFormat[] {
 		return [
 			customVerifiableIdSdJwtPresentationDefinition,
+			customEHICSdJwtPresentationDefinition,
+			customPDA1SdJwtPresentationDefinition,
 			verifiableIdWithEuropeanHealthInsuranceCardPresentationDefinition,
 			verifiableIdWithPda1PresentationDefinition,
 			// verifiableIdWithPda1WithEuropeanHealthInsuranceCardPresentationDefinition
