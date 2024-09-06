@@ -178,8 +178,17 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 				lang: req.lang,
 				locale: locale[req.lang]
 			});
+		} else {
+			return res.render('issuer/vid-auth-component', {
+				title: "VID authentication",
+				wwwalletURL: config.wwwalletURL,
+				authorizationRequestURL: url.toString(),
+				authorizationRequestQR: null,
+				state: url.searchParams.get('state'),
+				lang: req.lang,
+				locale: locale[req.lang]
+			});
 		}
-		return res.redirect(url.toString());
 	}
 	
 	
