@@ -40,9 +40,10 @@ block layout-content
 										th Value
 								tbody
 									each claim in presentationClaims[claimType]
-										tr
-											td= claim.name
-											td= claim.value
+										if claim.name != 'Credential Type'
+											tr
+												td= claim.name
+												td= claim.value
 
 				h3 Credentials
 
