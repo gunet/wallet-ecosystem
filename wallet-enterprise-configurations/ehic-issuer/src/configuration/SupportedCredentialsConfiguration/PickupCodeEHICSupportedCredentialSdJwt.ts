@@ -40,7 +40,7 @@ const credentialIssuerPrivateKey = crypto.createPrivateKey({ key: credentialIssu
 const dataset = JSON.parse(fs.readFileSync('/datasets/dataset.json', 'utf-8').toString()) as any;
 
 
-export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol {
+export class PickupCodeEHICSupportedCredentialSdJwt implements SupportedCredentialProtocol {
 
 
 	constructor(private credentialIssuerConfig: CredentialIssuer) { }
@@ -49,18 +49,18 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		return this.credentialIssuerConfig;
 	}
 	getId(): string {
-		return "urn:credential:pda1"
+		return "urn:credential:ehic"
 	}
 	getFormat(): VerifiableCredentialFormat {
 		return VerifiableCredentialFormat.VC_SD_JWT;
 	}
 	getTypes(): string[] {
-		return ["VerifiableCredential", "VerifiableAttestation", "PDA1Credential", this.getId()];
+		return ["VerifiableCredential", "VerifiableAttestation", "EuropeanHealthInsuranceCard", this.getId()];
 	}
 	getDisplay(): Display {
 		return {
-			name: "PDA1 Credential",
-			logo: { url: config.url + "/images/pda1.png" },
+			name: "EHIC Card",
+			logo: { url: config.url + "/images/ehicCard.png" },
 			background_color: "#4CC3DD"
 		}
 	}
@@ -114,7 +114,7 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		if (exp && Math.floor(Date.now() / 1000) > exp) {
 			console.log("Exp cmp = ", Math.floor(Date.now() / 1000) > exp)
 			throw new Error(`'exp' is missing from issuer_state or the issuer_state is expired`);
-		} 
+		}
 
 		console.log("User session = ", userSession)
 		if (!sub || !sub.includes(userSession.personalIdentifier)) {
@@ -170,9 +170,9 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		const payload = {
 			"@context": ["https://www.w3.org/2018/credentials/v1"],
 			"type": this.getTypes(),
-			"id": `urn:pda1:${randomUUID()}`,
-			"name": "PDA1",  // https://www.w3.org/TR/vc-data-model-2.0/#names-and-descriptions
-			"description": "This credential is issued by the National PDA1 credential issuer",
+			"id": `urn:ehic:${randomUUID()}`,
+			"name": "EHIC ID Card",  // https://www.w3.org/TR/vc-data-model-2.0/#names-and-descriptions
+			"description": "This credential is issued by the National EHIC ID credential issuer and it can be used for authentication purposes",
 			"credentialSubject": {
 				...claims,
 				"id": holderDID,
@@ -183,7 +183,7 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 			},
 			"credentialBranding": {
 				"image": {
-					"url": config.url + "/images/pda1.png"
+					"url": config.url + "/images/ehicCard.png"
 				},
 				"backgroundColor": "#8ebeeb",
 				"textColor": "#ffffff"
@@ -194,38 +194,16 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		const disclosureFrame = {
 			vc: {
 				credentialSubject: {
+					// familyName: true,
+					// firstName: true,
+					// birthdate: true,
 					personalIdentifier: true,
 					socialSecurityIdentification: {
 						ssn: true
 					},
-					nationality: true,
-					employer: {
-						employmentType: true,
-						name: true,
-						employerId: true,
-						typeOfId: true
-					},
-					decisionOnApplicableLegislation: {
-						validityPeriod: {
-							startingDate: true,
-							endingDate: true
-						}
-					},
-					address: {
-						street: true,
-						town: true,
-						postalCode: true,
-						countryCode: true
-					},
-					placeOfWork: {
-						companyName: true,
-						flagBaseHomeState: true,
-						companyId: true,
-						typeOfId: true,
-						street: true,
-						town: true,
-						postalCode: true,
-						countryCode: true
+					validityPeriod: {
+						startingDate: true,
+						endingDate: true
 					},
 					documentId: true,
 					competentInstitution: {

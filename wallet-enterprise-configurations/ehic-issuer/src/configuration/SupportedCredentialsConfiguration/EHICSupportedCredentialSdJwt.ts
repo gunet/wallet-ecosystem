@@ -27,7 +27,7 @@ export class EHICSupportedCredentialSdJwt implements SupportedCredentialProtocol
 		return VerifiableCredentialFormat.VC_SD_JWT;
 	}
 	getTypes(): string[] {
-		return ["VerifiableCredential", "VerifiableAttestation", "EuropeanHealthInsuranceCard", this.getId()];
+		return ["VerifiableCredential", "VerifiableAttestation", "EuropeanHealthInsuranceCard", "NoPickupCode", this.getId()];
 	}
 	getDisplay(): Display {
 		return {

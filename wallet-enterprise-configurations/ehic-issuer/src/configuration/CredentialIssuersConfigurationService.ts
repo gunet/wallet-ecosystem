@@ -11,7 +11,7 @@ import fs from 'fs';
 import { util } from "@cef-ebsi/key-did-resolver";
 import { HasherAlgorithm, HasherAndAlgorithm, SdJwt, SignatureAndEncryptionAlgorithm, Signer } from "@sd-jwt/core";
 import { KeyLike, createHash, randomBytes, sign } from "crypto";
-import { EHICSupportedCredentialSdJwt } from "./SupportedCredentialsConfiguration/EHICSupportedCredentialSdJwt";
+import { PickupCodeEHICSupportedCredentialSdJwt } from "./SupportedCredentialsConfiguration/PickupCodeEHICSupportedCredentialSdJwt";
 
 const issuerKeySetFile = fs.readFileSync(path.join(__dirname, '../../../keys/issuer.key.json'), 'utf-8');
 const issuerKeySet = KeyIdentifierKeySchema.parse(JSON.parse(issuerKeySetFile));
@@ -101,8 +101,8 @@ export class CredentialIssuersConfigurationService implements CredentialIssuersC
 		// ehicIssuer.addSupportedCredential(new CTWalletSameInTimeSupportedCredential(ehicIssuer));
 		// ehicIssuer.addSupportedCredential(new CTWalletSameDeferredSupportedCredential(ehicIssuer));
 		// ehicIssuer.addSupportedCredential(new CTWalletSamePreAuthorisedSupportedCredential(ehicIssuer));
-		ehicIssuer.addSupportedCredential(new EHICSupportedCredentialSdJwt(ehicIssuer));
-
+		// ehicIssuer.addSupportedCredential(new EHICSupportedCredentialSdJwt(ehicIssuer));
+		ehicIssuer.addSupportedCredential(new PickupCodeEHICSupportedCredentialSdJwt(ehicIssuer));
 		// const ehicIssuer2 = new CredentialIssuer()
 		// 	.setCredentialIssuerIdentifier(config.url + "/vid")
 		// 	.setWalletId("conformant")
