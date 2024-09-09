@@ -121,7 +121,7 @@ export class EHICSupportedCredentialSdJwt implements SupportedCredentialProtocol
 		const { jws } = await this.getCredentialIssuerConfig().getCredentialSigner()
 			.sign({
 				vc: payload
-			}, {}, disclosureFrame);
+			}, {}, disclosureFrame, {});
     const response = {
       format: this.getFormat(),
       credential: jws

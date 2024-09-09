@@ -37,9 +37,6 @@ const credentialIssuerPrivateKey = crypto.createPrivateKey({ key: credentialIssu
 
 
 
-const dataset = JSON.parse(fs.readFileSync('/datasets/dataset.json', 'utf-8').toString()) as any;
-
-
 export class PickupCodeEHICSupportedCredentialSdJwt implements SupportedCredentialProtocol {
 
 
@@ -166,7 +163,6 @@ export class PickupCodeEHICSupportedCredentialSdJwt implements SupportedCredenti
 
 
 		// use the dataset to retrieve only the username based on personalIdentifier
-		const username = dataset.users.filter((u: any) => u.authentication.personalIdentifier == userSession.personalIdentifier)[0].authentication.username;
 		const payload = {
 			"@context": ["https://www.w3.org/2018/credentials/v1"],
 			"type": this.getTypes(),
@@ -174,11 +170,16 @@ export class PickupCodeEHICSupportedCredentialSdJwt implements SupportedCredenti
 			"name": "EHIC ID Card",  // https://www.w3.org/TR/vc-data-model-2.0/#names-and-descriptions
 			"description": "This credential is issued by the National EHIC ID credential issuer and it can be used for authentication purposes",
 			"credentialSubject": {
-				...claims,
+				social_security_pin: String(claims.social_security_pin),
+				ehic_card_identification_number: String(claims.ehic_card_identification_number),
+				ehic_institution_id: String(claims.ehic_institution_id),
+				ehic_institution_name: claims.ehic_institution_name,
+				ehic_institution_country_code: claims.ehic_institution_country_code,
+				pid_id: undefined,
 				"id": holderDID,
 			},
 			"credentialStatus": {
-				"id": `${config.crl.url}#${(await CredentialStatusList.insert(username, claims.personalIdentifier)).id}`,
+				"id": `${config.crl.url}#${(await CredentialStatusList.insert(userSession.familyName ?? "", userSession.personalIdentifier)).id}`,
 				"type": "CertificateRevocationList"
 			},
 			"credentialBranding": {
@@ -197,27 +198,24 @@ export class PickupCodeEHICSupportedCredentialSdJwt implements SupportedCredenti
 					// familyName: true,
 					// firstName: true,
 					// birthdate: true,
-					personalIdentifier: true,
-					socialSecurityIdentification: {
-						ssn: true
-					},
-					validityPeriod: {
-						startingDate: true,
-						endingDate: true
-					},
-					documentId: true,
-					competentInstitution: {
-						competentInstitutionId: true,
-						competentInstitutionName: true,
-						competentInstitutionCountryCode: true
-					},
+					social_security_pin: true,
+					ehic_card_identification_number: true,
+					ehic_institution_id: true,
+					ehic_institution_name: true,
+					ehic_institution_country_code: true,
 				}
 			}
 		}
+
+		console.log("Claims = ", claims)
+		const { ehic_start_date, ehic_end_date } = claims;
 		const { jws } = await this.getCredentialIssuerConfig().getCredentialSigner()
 			.sign({
 				vc: payload
-			}, {}, disclosureFrame);
+			}, {}, disclosureFrame, {
+				nbf: Math.floor(new Date(ehic_start_date).getTime() / 1000),
+				exp: Math.floor(new Date(ehic_end_date).getTime() / 1000)
+			});
     const response = {
       format: this.getFormat(),
       credential: jws
