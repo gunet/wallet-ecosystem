@@ -17,7 +17,7 @@ const issuerKeySetFile = fs.readFileSync(path.join(__dirname, '../../../keys/iss
 const issuerKeySet = KeyIdentifierKeySchema.parse(JSON.parse(issuerKeySetFile));
 
 const issuerSigner: CredentialSigner = {
-	sign: async function (payload, headers, disclosureFrame) {
+	sign: async function (payload, headers, disclosureFrame, { nbf, exp }) {
 		const key = await importJWK(issuerKeySet.keys['ES256']?.privateKeyJwk, 'ES256');
 
 		const signer: Signer = (input, header) => {
@@ -44,20 +44,15 @@ const issuerSigner: CredentialSigner = {
 		const kid = `${did}#${did.split(':')[2]}`;
 
 		const issuanceDate = new Date();
-		const expirationDate = (() => {
-			if (payload.vc.credentialSubject?.validityPeriod?.endingDate) {
-				const expirationDate = new Date(payload.vc.credentialSubject.validityPeriod.endingDate);
-				return expirationDate;
-			}
-			else { // if no expiration date found on credential subject, then set it to next year
-				const expirationDate = new Date();
-				expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-				return expirationDate;
-			}
-		})();
 
-		payload.vc.expirationDate = expirationDate.toISOString();
-		payload.exp = Math.floor(expirationDate.getTime() / 1000);
+		if (nbf) {
+			payload.nbf = nbf;
+			payload.vc.validFrom = new Date(nbf * 1000).toISOString();
+		}
+		if (exp) {
+			payload.exp = exp;
+			payload.vc.expirationDate = new Date(exp * 1000).toISOString();
+		}
 
 		payload.vc.issuanceDate = issuanceDate.toISOString();
 		payload.iat = Math.floor(issuanceDate.getTime() / 1000);

@@ -6,19 +6,23 @@ import AppDataSource from "../../AppDataSource";
 import { AuthorizationServerState } from "../../entities/AuthorizationServerState.entity";
 import locale from "../locale";
 import { UserAuthenticationMethod } from "../../types/UserAuthenticationMethod.enum";
-import fs from 'fs';
+import { parsePidData } from 'dataset-reader';
 
 export class LocalAuthenticationComponent extends AuthenticationComponent {
 
 	constructor(
 		override identifier: string,
 		override protectedEndpoint: string,
-		private users = []
+		private users: any[] = []
 	) {
-		super(identifier, protectedEndpoint)
-		const dataset = JSON.parse(fs.readFileSync('/datasets/dataset.json', 'utf-8').toString()) as any;
-		console.dir(dataset, { depth: null })
-		this.users = dataset.users;
+		super(identifier, protectedEndpoint);
+		const data = parsePidData("/datasets/dataset.xlsx");
+		console.log("Raw pid_expiry_date = ", data[0].pid_expiry_date)
+		console.log("Converted to unix timestamp = ", Math.floor(new Date(data[0].pid_expiry_date).getTime() / 1000) )
+		console.log("Birthdate = ", data[0].birth_date)
+		console.log("Columns of first row");
+		console.log(Object.keys(data[0]));
+		this.users = data as any[];
 	}
 
 	public override async authenticate(
@@ -55,10 +59,10 @@ export class LocalAuthenticationComponent extends AuthenticationComponent {
 			return false;
 		}
 		const username = req.session.authenticationChain.localAuthenticationComponent.username;
-		if (!username || this.users.filter((u: any) => u.authentication.username == username).length != 1) return false;
+		if (!username || this.users.filter((u: any) => u.User == username).length != 1) return false;
 
-		const usersFound = this.users.filter((u: any) => u.authentication.username == username) as any;
-		req.authorizationServerState.personalIdentifier = usersFound[0].authentication.personalIdentifier;
+		const usersFound = this.users.filter((u: any) => u.User == username) as any;
+		req.authorizationServerState.personalIdentifier = usersFound[0].pid_id;
 		await AppDataSource.getRepository(AuthorizationServerState).save(req.authorizationServerState);
 		return true;
 	}
@@ -82,7 +86,7 @@ export class LocalAuthenticationComponent extends AuthenticationComponent {
 
 	private async handleLoginSubmission(req: Request, res: Response): Promise<any> {
 		const { username, password } = req.body;
-		const usersFound = this.users.filter((u: any) => u.authentication.username == username && u.authentication.password == password);
+		const usersFound = this.users.filter((u: any) => u.User == username && u.Password == password);
 		if (usersFound.length == 1) {
 			// sign a token and send it to the client
 
@@ -90,7 +94,7 @@ export class LocalAuthenticationComponent extends AuthenticationComponent {
 				username: username
 			};
 
-			req.authorizationServerState.personalIdentifier = (usersFound[0] as any).authentication.personalIdentifier;
+			req.authorizationServerState.personalIdentifier = (usersFound[0] as any).pid_id;
 			await AppDataSource.getRepository(AuthorizationServerState).save(req.authorizationServerState);
 			return res.redirect(this.protectedEndpoint);
 		}

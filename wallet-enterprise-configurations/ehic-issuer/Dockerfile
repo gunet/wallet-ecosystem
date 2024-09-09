@@ -19,6 +19,7 @@ COPY --from=builder /app/package.json .
 COPY --from=builder /app/dist/ ./dist/
 COPY --from=builder /app/public/ ./public/
 COPY --from=builder /app/views/ ./views/
+COPY --from=builder /app/dataset-reader-v1.0.0.tgz ./dataset-reader-v1.0.0.tgz
 
 
 RUN --mount=type=secret,id=npmrc,required=true,target=./.npmrc,uid=1000 \

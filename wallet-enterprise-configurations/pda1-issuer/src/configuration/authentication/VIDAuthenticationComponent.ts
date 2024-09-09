@@ -64,10 +64,8 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 		const [_credentialHeader, credentialPayload, _sig] = credential.split('.');
 
 		const parsedCredPayload = JSON.parse(base64url.decode(credentialPayload)) as any;
-
-		const { validityPeriod: { startingDate, endingDate }} = parsedCredPayload.vc.credentialSubject;
-		
-		if (new Date(startingDate) > new Date() || new Date() > new Date(endingDate)) {
+		console.log("Parsed payload = ", parsedCredPayload)
+		if (new Date(parsedCredPayload.exp * 1000) < new Date()) {
 			return { valid: false };
 		}
 
@@ -81,6 +79,7 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 			.createQueryBuilder("vp")
 			.where("vp.state = :state_id", { state_id: state })
 			.getOne();
+
 		if (!queryRes) {
 			return;
 		}
@@ -92,37 +91,49 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 			.getOne();
 
 		if (!authorizationServerState || !vp_token || !queryRes.claims || !queryRes.claims["PID"]) {
+			console.error("authorizationServerState or vp_token or claims or claims['PID'] is not defined")
 			return;
 		}
 
+		console.log("Checking validity")
 		const { valid } = await this.checkForInvalidCredentials(queryRes!.raw_presentation as string);
 		if (!valid) {
-			return await this.redirectToFailurePage(req, res, "Credential is not valid");
+			// provide wallet redirect url
+			return await this.redirectToFailurePage(req, res, "Credential is not valid", authorizationServerState.redirect_uri != undefined ? new URL(authorizationServerState.redirect_uri).origin : null);
 		}
-		const personalIdentifier = queryRes.claims["PID"].filter((claim) => claim.name == 'personalIdentifier')[0].value ?? null;
-	
+
+		const personalIdentifier = queryRes.claims["PID"].filter((claim) => claim.name == 'personal_identifier')[0].value ?? null;
+		
+		const familyName = queryRes.claims["PID"].filter((claim) => claim.name == 'family_name')[0].value ?? null;
+		console.log("Parsed family name = ", familyName)
+
 		if (!personalIdentifier) {
+			console.error("personal identifier could not be extracted")
 			return;
 		}
 		authorizationServerState.personalIdentifier = personalIdentifier;
+		authorizationServerState.familyName = familyName;
 
 		req.session.authenticationChain.vidAuthenticationComponent = {
-			personalIdentifier: personalIdentifier
+			personalIdentifier: personalIdentifier,
+			familyName: familyName,
 		};
 
 		console.log("Personal identifier = ", personalIdentifier)
 		req.authorizationServerState.personalIdentifier = personalIdentifier;
+		req.authorizationServerState.familyName = familyName;
 
 		await AppDataSource.getRepository(AuthorizationServerState).save(authorizationServerState);
 		return res.redirect(this.protectedEndpoint);
 
 	}
 
-	private async redirectToFailurePage(_req: Request, res: Response, msg: string) {
+	private async redirectToFailurePage(_req: Request, res: Response, msg: string, redirectUrl: string | null) {
 		res.render('error', {
 			code: 100,
 			msg: msg,
 			locale: locale,
+			redirect: redirectUrl
 		})
 	}
 

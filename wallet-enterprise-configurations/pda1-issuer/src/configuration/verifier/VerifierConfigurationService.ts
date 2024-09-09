@@ -27,7 +27,13 @@ export class VerifierConfigurationService implements VerifierConfigurationInterf
 							"fields": [
 								{
 									"path": [
-										"$.credentialSubject.personalIdentifier"
+										"$.credentialSubject.personal_identifier"
+									],
+									"filter": {}
+								},
+								{
+									"path": [
+										"$.credentialSubject.family_name"
 									],
 									"filter": {}
 								},
@@ -45,7 +51,7 @@ export class VerifierConfigurationService implements VerifierConfigurationInterf
 					}
 				]
 			}
-		]
+		] as any[]
 	}
 
 	getConfiguration(): OpenidForPresentationsConfiguration {

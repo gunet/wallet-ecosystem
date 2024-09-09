@@ -35,11 +35,6 @@ privateKeyContent = fs.readFileSync(privateKeyFilePath, 'utf8');
 const credentialIssuerPrivateKeyJWK = JSON.parse(privateKeyContent) as crypto.JsonWebKey;
 const credentialIssuerPrivateKey = crypto.createPrivateKey({ key: credentialIssuerPrivateKeyJWK, format: 'jwk' });
 
-
-
-const dataset = JSON.parse(fs.readFileSync('/datasets/dataset.json', 'utf-8').toString()) as any;
-
-
 export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol {
 
 
@@ -74,6 +69,8 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		if (!userSession.issuer_state || userSession.issuer_state == "null") {
 			throw new Error("issuer_state was not found user session");
 		}
+
+		console.log("Family name = ", userSession.familyName)
 
 		console.log('type of issuer state ', typeof userSession.issuer_state);
 		if (!userSession.personalIdentifier) {
@@ -166,7 +163,6 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 
 
 		// use the dataset to retrieve only the username based on personalIdentifier
-		const username = dataset.users.filter((u: any) => u.authentication.personalIdentifier == userSession.personalIdentifier)[0].authentication.username;
 		const payload = {
 			"@context": ["https://www.w3.org/2018/credentials/v1"],
 			"type": this.getTypes(),
@@ -175,10 +171,14 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 			"description": "This credential is issued by the National PDA1 credential issuer",
 			"credentialSubject": {
 				...claims,
+				pid_id: undefined, // hide this field
+				pda1_expiry_date: undefined, // hide this field
+				pda1_starting_date: undefined, // hide this field
+				pda1_ending_date: undefined, // hide this field
 				"id": holderDID,
 			},
 			"credentialStatus": {
-				"id": `${config.crl.url}#${(await CredentialStatusList.insert(username, claims.personalIdentifier)).id}`,
+				"id": `${config.crl.url}#${(await CredentialStatusList.insert(userSession.familyName ?? "", claims.pid_id)).id}`,
 				"type": "CertificateRevocationList"
 			},
 			"credentialBranding": {
@@ -194,52 +194,50 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		const disclosureFrame = {
 			vc: {
 				credentialSubject: {
-					personalIdentifier: true,
-					socialSecurityIdentification: {
-						ssn: true
-					},
+					social_security_pin: true,
 					nationality: true,
-					employer: {
-						employmentType: true,
-						name: true,
-						employerId: true,
-						typeOfId: true
-					},
-					decisionOnApplicableLegislation: {
-						validityPeriod: {
-							startingDate: true,
-							endingDate: true
-						}
-					},
-					address: {
-						street: true,
-						town: true,
-						postalCode: true,
-						countryCode: true
-					},
-					placeOfWork: {
-						companyName: true,
-						flagBaseHomeState: true,
-						companyId: true,
-						typeOfId: true,
-						street: true,
-						town: true,
-						postalCode: true,
-						countryCode: true
-					},
-					documentId: true,
-					competentInstitution: {
-						competentInstitutionId: true,
-						competentInstitutionName: true,
-						competentInstitutionCountryCode: true
-					},
+					type_of_employment: true,
+					pda1_name: true,
+					pda1_employer_id: true,
+					pda1_type_of_id: true,
+					pda1_employer_street: true,
+					pda1_employer_town: true,
+					pda1_employer_postal_code: true,
+					pda1_employer_country_code: true,
+
+					pda1_pow_country_code: true,
+					pda1_pow_company_name: true,
+					pda1_pow_company_id: true,
+					pda1_pow_type_of_id: true,
+					pda1_pow_employer_country_code: true,
+					pda1_flag_base_home_state: true,
+					pda1_pow_employer_street: true,
+					pda1_pow_employer_town: true,
+					pda1_pow_employer_postal_code: true,
+					pda1_member_state: true,
+					pda1_transitional_rules: true,
+
+					pda1_status_confirmation: true,
+
+					pda1_document_id: true,
+
+					pda1_institution_id: true,
+					pda1_institution_name: true,
+					pda1_institution_country_code: true,
+
 				}
 			}
 		}
+
+		const { pda1_starting_date, pda1_ending_date } = claims;
+
 		const { jws } = await this.getCredentialIssuerConfig().getCredentialSigner()
 			.sign({
 				vc: payload
-			}, {}, disclosureFrame);
+			}, {}, disclosureFrame, {
+				nbf: Math.floor(new Date(pda1_starting_date).getTime() / 1000),
+				exp: Math.floor(new Date(pda1_ending_date).getTime() / 1000)
+			});
     const response = {
       format: this.getFormat(),
       credential: jws
