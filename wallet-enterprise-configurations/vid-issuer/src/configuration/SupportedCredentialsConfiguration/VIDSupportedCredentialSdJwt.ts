@@ -6,16 +6,13 @@ import { SupportedCredentialProtocol } from "../../lib/CredentialIssuerConfig/Su
 import { AuthorizationServerState } from "../../entities/AuthorizationServerState.entity";
 import { CredentialView } from "../../authorization/types";
 import { randomUUID } from "node:crypto";
-import fs from 'fs';
 import { CredentialStatusList } from "../../lib/CredentialStatus";
+import { parsePidData } from 'dataset-reader';
 
 export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol {
 
-	dataset: any;
 
-  constructor(private credentialIssuerConfig: CredentialIssuer) {
-		this.dataset = JSON.parse(fs.readFileSync('/datasets/dataset.json', 'utf-8').toString()) as any;
-	}
+  constructor(private credentialIssuerConfig: CredentialIssuer) { }
 
   getCredentialIssuerConfig(): CredentialIssuer {
     return this.credentialIssuerConfig;
@@ -43,16 +40,16 @@ export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol 
       return null;
     }
 
-		this.dataset = JSON.parse(fs.readFileSync('/datasets/dataset.json', 'utf-8').toString()) as any;
-		const vids = this.dataset.users.filter((user: any) => user.authentication.personalIdentifier == userSession.personalIdentifier);
+		const dataset = parsePidData("/datasets/dataset.xlsx");
+		const vids = dataset.filter((user: any) => user.pid_id == userSession.personalIdentifier);
 		const credentialViews: CredentialView[] = vids
 			.map((vid: any) => {
 				const rows: CategorizedRawCredentialViewRow[] = [
-					{ name: "Family Name", value: vid.claims.familyName },
-					{ name: "First Name", value: vid.claims.firstName },
-					{ name: "Personal Identifier", value: vid.claims.personalIdentifier },
-					{ name: "Date of Birth", value: vid.claims.birthdate },
-					{ name: "Expiration Date", value: vid.claims.validityPeriod.endingDate },
+					{ name: "Family Name", value: vid.family_name },
+					{ name: "Given Name", value: vid.given_name },
+					{ name: "Personal Identifier", value: vid.pid_id },
+					{ name: "Date of Birth", value: (vid.birth_date as Date).toDateString() },
+					{ name: "Expiration Date", value: new Date(vid.pid_expiry_date).toDateString() },
 				];
 				const rowsObject: CategorizedRawCredentialView = { rows };
 				
@@ -72,9 +69,8 @@ export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol 
 		}
 		
 
-		this.dataset = JSON.parse(fs.readFileSync('/datasets/dataset.json', 'utf-8').toString()) as any;
-		const { claims, authentication } = this.dataset.users.filter((user: any) => user.authentication.personalIdentifier == userSession.personalIdentifier)[0];
-		console.log("Vid claims = ", claims)
+		const dataset = parsePidData("/datasets/dataset.xlsx");
+		const data = dataset.filter((user: any) => user.pid_id == userSession.personalIdentifier)[0];
 		const payload = {
 			"@context": ["https://www.w3.org/2018/credentials/v1"],
 			"type": this.getTypes(),
@@ -82,11 +78,14 @@ export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol 
 			"name": "PID",  // https://www.w3.org/TR/vc-data-model-2.0/#names-and-descriptions
 			"description": "This credential is issued by the National PID credential issuer and it can be used for authentication purposes",
 			"credentialSubject": {
-				...claims,
+				family_name: data.family_name,
+				given_name: data.given_name,
+				birth_date: data.birth_date,
+				personal_identifier: String(data.pid_id),
 				"id": holderDID,
 			},
 			"credentialStatus": {
-				"id": `${config.crl.url}#${(await CredentialStatusList.insert(authentication.username, claims.personalIdentifier)).id}`,
+				"id": `${config.crl.url}#${(await CredentialStatusList.insert(data.User, data.pid_id)).id}`,
 				"type": "CertificateRevocationList"
 			},
 			"credentialBranding": {
@@ -105,17 +104,17 @@ export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol 
 		const disclosureFrame = {
 			vc: {
 				credentialSubject: {
-					familyName: true,
-					firstName: true,
-					birthdate: true,
-					personalIdentifier: true,
+					family_name: true,
+					given_name: true,
+					birth_date: true,
+					personal_identifier: true,
 				}
 			}
 		}
 		const { jws } = await this.getCredentialIssuerConfig().getCredentialSigner()
 			.sign({
 				vc: payload
-			}, {}, disclosureFrame);
+			}, {}, disclosureFrame, { exp: Math.floor(new Date(data.pid_expiry_date).getTime() / 1000) });
     const response = {
       format: this.getFormat(),
       credential: jws

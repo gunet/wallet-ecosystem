@@ -64,10 +64,8 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 		const [_credentialHeader, credentialPayload, _sig] = credential.split('.');
 
 		const parsedCredPayload = JSON.parse(base64url.decode(credentialPayload)) as any;
-
-		const { validityPeriod: { startingDate, endingDate }} = parsedCredPayload.vc.credentialSubject;
 		
-		if (new Date(startingDate) > new Date() || new Date() > new Date(endingDate)) {
+		if (new Date(parsedCredPayload.exp * 1000) < new Date()) {
 			return { valid: false };
 		}
 
@@ -98,21 +96,24 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 
 		const { valid } = await this.checkForInvalidCredentials(queryRes!.raw_presentation as string);
 		if (!valid) {
-			return await this.redirectToFailurePage(req, res, "Credential is not valid");
+			return await this.redirectToFailurePage(req, res, "Credential is not valid", authorizationServerState.redirect_uri != undefined ? new URL(authorizationServerState.redirect_uri).origin : null);
 		}
-		const personalIdentifier = queryRes.claims["PID"].filter((claim) => claim.name == 'personalIdentifier')[0].value ?? null;
+		const personalIdentifier = queryRes.claims["PID"].filter((claim) => claim.name == 'personal_identifier')[0].value ?? null;
+		const familyName = queryRes.claims["PID"].filter((claim) => claim.name == 'family_name')[0].value ?? null;
 
 		if (!personalIdentifier) {
 			return;
 		}
 		authorizationServerState.personalIdentifier = personalIdentifier;
-
+		authorizationServerState.familyName = familyName;
 		req.session.authenticationChain.vidAuthenticationComponent = {
-			personalIdentifier: personalIdentifier
+			personalIdentifier: personalIdentifier,
+			familyName: familyName,
 		};
 
 		console.log("Personal identifier = ", personalIdentifier)
 		req.authorizationServerState.personalIdentifier = personalIdentifier;
+		req.authorizationServerState.familyName = familyName;
 
 		await AppDataSource.getRepository(AuthorizationServerState).save(authorizationServerState);
 		return res.redirect(this.protectedEndpoint);
@@ -120,11 +121,12 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 	}
 
 
-	private async redirectToFailurePage(_req: Request, res: Response, msg: string) {
+	private async redirectToFailurePage(_req: Request, res: Response, msg: string, redirectUrl: string | null) {
 		res.render('error', {
 			code: 100,
 			msg: msg,
 			locale: locale,
+			redirect: redirectUrl
 		})
 	}
 

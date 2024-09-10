@@ -11,13 +11,13 @@ import fs from 'fs';
 import { util } from "@cef-ebsi/key-did-resolver";
 import { HasherAlgorithm, HasherAndAlgorithm, SdJwt, SignatureAndEncryptionAlgorithm, Signer } from "@sd-jwt/core";
 import { KeyLike, createHash, randomBytes, sign } from "crypto";
-import { EHICSupportedCredentialSdJwt } from "./SupportedCredentialsConfiguration/EHICSupportedCredentialSdJwt";
+import { PickupCodeEHICSupportedCredentialSdJwt } from "./SupportedCredentialsConfiguration/PickupCodeEHICSupportedCredentialSdJwt";
 
 const issuerKeySetFile = fs.readFileSync(path.join(__dirname, '../../../keys/issuer.key.json'), 'utf-8');
 const issuerKeySet = KeyIdentifierKeySchema.parse(JSON.parse(issuerKeySetFile));
 
 const issuerSigner: CredentialSigner = {
-	sign: async function (payload, headers, disclosureFrame) {
+	sign: async function (payload, headers, disclosureFrame, { nbf, exp }) {
 		const key = await importJWK(issuerKeySet.keys['ES256']?.privateKeyJwk, 'ES256');
 
 		const signer: Signer = (input, header) => {
@@ -44,20 +44,15 @@ const issuerSigner: CredentialSigner = {
 		const kid = `${did}#${did.split(':')[2]}`;
 
 		const issuanceDate = new Date();
-		const expirationDate = (() => {
-			if (payload.vc.credentialSubject?.validityPeriod?.endingDate) {
-				const expirationDate = new Date(payload.vc.credentialSubject.validityPeriod.endingDate);
-				return expirationDate;
-			}
-			else { // if no expiration date found on credential subject, then set it to next year
-				const expirationDate = new Date();
-				expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-				return expirationDate;
-			}
-		})();
 
-		payload.vc.expirationDate = expirationDate.toISOString();
-		payload.exp = Math.floor(expirationDate.getTime() / 1000);
+		if (nbf) {
+			payload.nbf = nbf;
+			payload.vc.validFrom = new Date(nbf * 1000).toISOString();
+		}
+		if (exp) {
+			payload.exp = exp;
+			payload.vc.expirationDate = new Date(exp * 1000).toISOString();
+		}
 
 		payload.vc.issuanceDate = issuanceDate.toISOString();
 		payload.iat = Math.floor(issuanceDate.getTime() / 1000);
@@ -101,8 +96,8 @@ export class CredentialIssuersConfigurationService implements CredentialIssuersC
 		// ehicIssuer.addSupportedCredential(new CTWalletSameInTimeSupportedCredential(ehicIssuer));
 		// ehicIssuer.addSupportedCredential(new CTWalletSameDeferredSupportedCredential(ehicIssuer));
 		// ehicIssuer.addSupportedCredential(new CTWalletSamePreAuthorisedSupportedCredential(ehicIssuer));
-		ehicIssuer.addSupportedCredential(new EHICSupportedCredentialSdJwt(ehicIssuer));
-
+		// ehicIssuer.addSupportedCredential(new EHICSupportedCredentialSdJwt(ehicIssuer));
+		ehicIssuer.addSupportedCredential(new PickupCodeEHICSupportedCredentialSdJwt(ehicIssuer));
 		// const ehicIssuer2 = new CredentialIssuer()
 		// 	.setCredentialIssuerIdentifier(config.url + "/vid")
 		// 	.setWalletId("conformant")

@@ -9,6 +9,9 @@ export = {
 		password: "root",
 		dbname: "ehicissuer"
 	},
+	resourcesVaultService: {
+		url: "http://resources-vault:6555"
+	},
 	wwwalletURL: "http://localhost:3000/cb",
 	crl: {
 		url: "http://credential-status-list:9001",

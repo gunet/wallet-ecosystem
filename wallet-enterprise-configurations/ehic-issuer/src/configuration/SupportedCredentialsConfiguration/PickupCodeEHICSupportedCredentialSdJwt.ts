@@ -35,7 +35,9 @@ privateKeyContent = fs.readFileSync(privateKeyFilePath, 'utf8');
 const credentialIssuerPrivateKeyJWK = JSON.parse(privateKeyContent) as crypto.JsonWebKey;
 const credentialIssuerPrivateKey = crypto.createPrivateKey({ key: credentialIssuerPrivateKeyJWK, format: 'jwk' });
 
-export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol {
+
+
+export class PickupCodeEHICSupportedCredentialSdJwt implements SupportedCredentialProtocol {
 
 
 	constructor(private credentialIssuerConfig: CredentialIssuer) { }
@@ -44,18 +46,18 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		return this.credentialIssuerConfig;
 	}
 	getId(): string {
-		return "urn:credential:pda1"
+		return "urn:credential:ehic"
 	}
 	getFormat(): VerifiableCredentialFormat {
 		return VerifiableCredentialFormat.VC_SD_JWT;
 	}
 	getTypes(): string[] {
-		return ["VerifiableCredential", "VerifiableAttestation", "PDA1Credential", this.getId()];
+		return ["VerifiableCredential", "VerifiableAttestation", "EuropeanHealthInsuranceCard", this.getId()];
 	}
 	getDisplay(): Display {
 		return {
-			name: "PDA1 Credential",
-			logo: { url: config.url + "/images/pda1.png" },
+			name: "EHIC Card",
+			logo: { url: config.url + "/images/ehicCard.png" },
 			background_color: "#4CC3DD"
 		}
 	}
@@ -69,8 +71,6 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		if (!userSession.issuer_state || userSession.issuer_state == "null") {
 			throw new Error("issuer_state was not found user session");
 		}
-
-		console.log("Family name = ", userSession.familyName)
 
 		console.log('type of issuer state ', typeof userSession.issuer_state);
 		if (!userSession.personalIdentifier) {
@@ -111,7 +111,7 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		if (exp && Math.floor(Date.now() / 1000) > exp) {
 			console.log("Exp cmp = ", Math.floor(Date.now() / 1000) > exp)
 			throw new Error(`'exp' is missing from issuer_state or the issuer_state is expired`);
-		} 
+		}
 
 		console.log("User session = ", userSession)
 		if (!sub || !sub.includes(userSession.personalIdentifier)) {
@@ -166,24 +166,25 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		const payload = {
 			"@context": ["https://www.w3.org/2018/credentials/v1"],
 			"type": this.getTypes(),
-			"id": `urn:pda1:${randomUUID()}`,
-			"name": "PDA1",  // https://www.w3.org/TR/vc-data-model-2.0/#names-and-descriptions
-			"description": "This credential is issued by the National PDA1 credential issuer",
+			"id": `urn:ehic:${randomUUID()}`,
+			"name": "EHIC ID Card",  // https://www.w3.org/TR/vc-data-model-2.0/#names-and-descriptions
+			"description": "This credential is issued by the National EHIC ID credential issuer and it can be used for authentication purposes",
 			"credentialSubject": {
-				...claims,
-				pid_id: undefined, // hide this field
-				pda1_expiry_date: undefined, // hide this field
-				pda1_starting_date: undefined, // hide this field
-				pda1_ending_date: undefined, // hide this field
+				social_security_pin: String(claims.social_security_pin),
+				ehic_card_identification_number: String(claims.ehic_card_identification_number),
+				ehic_institution_id: String(claims.ehic_institution_id),
+				ehic_institution_name: claims.ehic_institution_name,
+				ehic_institution_country_code: claims.ehic_institution_country_code,
+				pid_id: undefined,
 				"id": holderDID,
 			},
 			"credentialStatus": {
-				"id": `${config.crl.url}#${(await CredentialStatusList.insert(userSession.familyName ?? "", claims.pid_id)).id}`,
+				"id": `${config.crl.url}#${(await CredentialStatusList.insert(userSession.familyName ?? "", userSession.personalIdentifier)).id}`,
 				"type": "CertificateRevocationList"
 			},
 			"credentialBranding": {
 				"image": {
-					"url": config.url + "/images/pda1.png"
+					"url": config.url + "/images/ehicCard.png"
 				},
 				"backgroundColor": "#8ebeeb",
 				"textColor": "#ffffff"
@@ -194,49 +195,26 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 		const disclosureFrame = {
 			vc: {
 				credentialSubject: {
+					// familyName: true,
+					// firstName: true,
+					// birthdate: true,
 					social_security_pin: true,
-					nationality: true,
-					type_of_employment: true,
-					pda1_name: true,
-					pda1_employer_id: true,
-					pda1_type_of_id: true,
-					pda1_employer_street: true,
-					pda1_employer_town: true,
-					pda1_employer_postal_code: true,
-					pda1_employer_country_code: true,
-
-					pda1_pow_country_code: true,
-					pda1_pow_company_name: true,
-					pda1_pow_company_id: true,
-					pda1_pow_type_of_id: true,
-					pda1_pow_employer_country_code: true,
-					pda1_flag_base_home_state: true,
-					pda1_pow_employer_street: true,
-					pda1_pow_employer_town: true,
-					pda1_pow_employer_postal_code: true,
-					pda1_member_state: true,
-					pda1_transitional_rules: true,
-
-					pda1_status_confirmation: true,
-
-					pda1_document_id: true,
-
-					pda1_institution_id: true,
-					pda1_institution_name: true,
-					pda1_institution_country_code: true,
-
+					ehic_card_identification_number: true,
+					ehic_institution_id: true,
+					ehic_institution_name: true,
+					ehic_institution_country_code: true,
 				}
 			}
 		}
 
-		const { pda1_starting_date, pda1_ending_date } = claims;
-
+		console.log("Claims = ", claims)
+		const { ehic_start_date, ehic_end_date } = claims;
 		const { jws } = await this.getCredentialIssuerConfig().getCredentialSigner()
 			.sign({
 				vc: payload
 			}, {}, disclosureFrame, {
-				nbf: Math.floor(new Date(pda1_starting_date).getTime() / 1000),
-				exp: Math.floor(new Date(pda1_ending_date).getTime() / 1000)
+				nbf: Math.floor(new Date(ehic_start_date).getTime() / 1000),
+				exp: Math.floor(new Date(ehic_end_date).getTime() / 1000)
 			});
     const response = {
       format: this.getFormat(),
