@@ -14,6 +14,7 @@ import { openidForPresentationReceivingService, verifierConfigurationService } f
 import { UserAuthenticationMethod } from "../../types/UserAuthenticationMethod.enum";
 import { PresentationDefinitionTypeWithFormat } from "../verifier/VerifierConfigurationService";
 import base64url from "base64url";
+import axios from 'axios';
 
 export class VIDAuthenticationComponent extends AuthenticationComponent {
 
@@ -66,6 +67,21 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 		const parsedCredPayload = JSON.parse(base64url.decode(credentialPayload)) as any;
 		
 		if (new Date(parsedCredPayload.exp * 1000) < new Date()) {
+			return { valid: false };
+		}
+
+		try { // check revocation list
+			const credentialStatusIdValue = parsedCredPayload.vc.credentialStatus.id;
+			const [revocationListUrl, id] = credentialStatusIdValue.split('#')
+			const revocationListRes = await axios.get(revocationListUrl);
+			const revocationList = revocationListRes.data.crl;
+			const record = revocationList.filter((record: any) => record.id == id)[0];
+			if (record && record.revocation_date != null) {
+				return { valid: false }
+			}
+		}
+		catch(err) {
+			console.error("Failed to get revocation status for this credential");
 			return { valid: false };
 		}
 

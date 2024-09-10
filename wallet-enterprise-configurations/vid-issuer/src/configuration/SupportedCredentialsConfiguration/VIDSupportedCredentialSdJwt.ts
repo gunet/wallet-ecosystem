@@ -85,7 +85,7 @@ export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol 
 				"id": holderDID,
 			},
 			"credentialStatus": {
-				"id": `${config.crl.url}#${(await CredentialStatusList.insert(data.User, data.pid_id)).id}`,
+				"id": `${config.crl.url}#${(await CredentialStatusList.insert(data.family_name, data.pid_id)).id}`,
 				"type": "CertificateRevocationList"
 			},
 			"credentialBranding": {
