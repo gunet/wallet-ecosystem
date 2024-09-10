@@ -397,12 +397,12 @@ const scenarioTwoPda1Part = {
 				"filter": {}
 			},
 			{
-				"name": "Place of word Street",
+				"name": "Place of work Street",
 				"path": ['$.credentialSubject.pda1_pow_employer_street'],
 				"filter": {}
 			},
 			{
-				"name": "Place of word Town",
+				"name": "Place of work Town",
 				"path": ['$.credentialSubject.pda1_pow_employer_town'],
 				"filter": {}
 			},
