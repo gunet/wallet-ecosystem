@@ -70,7 +70,7 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 			throw new Error("issuer_state was not found user session");
 		}
 
-		console.log("Family name = ", userSession.familyName)
+		console.log("Family name = ", userSession.family_name)
 
 		console.log('type of issuer state ', typeof userSession.issuer_state);
 		if (!userSession.personalIdentifier) {
@@ -175,10 +175,13 @@ export class PDA1SupportedCredentialSdJwt implements SupportedCredentialProtocol
 				pda1_expiry_date: undefined, // hide this field
 				pda1_starting_date: undefined, // hide this field
 				pda1_ending_date: undefined, // hide this field
+				family_name: undefined,
+				given_name: undefined,
+				birth_date: undefined,
 				"id": holderDID,
 			},
 			"credentialStatus": {
-				"id": `${config.crl.url}#${(await CredentialStatusList.insert(userSession.familyName ?? "", claims.pid_id)).id}`,
+				"id": `${config.crl.url}#${(await CredentialStatusList.insert(userSession.family_name ?? "", claims.pid_id)).id}`,
 				"type": "CertificateRevocationList"
 			},
 			"credentialBranding": {

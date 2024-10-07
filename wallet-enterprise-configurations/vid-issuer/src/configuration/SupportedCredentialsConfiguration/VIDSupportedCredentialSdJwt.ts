@@ -36,13 +36,18 @@ export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol 
 
 
   async getProfile(userSession: AuthorizationServerState): Promise<CredentialView | null> {
-    if (!userSession?.personalIdentifier) {
-      return null;
-    }
+		if (!userSession.given_name || !userSession.family_name || !userSession.birth_date) {
+			throw new Error("Cannot generate credential: (given_name, family_name, birth_date) is missing");
+		}
+
 
 		const dataset = parsePidData("/datasets/dataset.xlsx");
-		const vids = dataset.filter((user: any) => user.pid_id == userSession.personalIdentifier);
-		const credentialViews: CredentialView[] = vids
+		const data = dataset.filter((user: any) => 
+				user.given_name == userSession.given_name && 
+				user.family_name == userSession.family_name &&
+				user.birth_date.toISOString() == userSession.birth_date
+		);
+		const credentialViews: CredentialView[] = data
 			.map((vid: any) => {
 				const rows: CategorizedRawCredentialViewRow[] = [
 					{ name: "Family Name", value: vid.family_name },
@@ -64,13 +69,16 @@ export class VIDSupportedCredentialSdJwt implements SupportedCredentialProtocol 
   }
   
   async generateCredentialResponse(userSession: AuthorizationServerState, holderDID: string): Promise<{ format: VerifiableCredentialFormat; credential: any;  }> {
-		if (!userSession.personalIdentifier) {
-			throw new Error("Cannot generate credential: Taxis id is missing");
+		if (!userSession.given_name || !userSession.family_name || !userSession.birth_date) {
+			throw new Error("Cannot generate credential: (given_name, family_name, birth_date) is missing");
 		}
-		
 
 		const dataset = parsePidData("/datasets/dataset.xlsx");
-		const data = dataset.filter((user: any) => user.pid_id == userSession.personalIdentifier)[0];
+		const data = dataset.filter((user: any) => 
+				user.given_name == userSession.given_name && 
+				user.family_name == userSession.family_name &&
+				user.birth_date.toISOString() == userSession.birth_date
+		)[0];
 		const payload = {
 			"@context": ["https://www.w3.org/2018/credentials/v1"],
 			"type": this.getTypes(),

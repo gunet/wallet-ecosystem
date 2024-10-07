@@ -176,10 +176,13 @@ export class PickupCodeEHICSupportedCredentialSdJwt implements SupportedCredenti
 				ehic_institution_name: claims.ehic_institution_name,
 				ehic_institution_country_code: claims.ehic_institution_country_code,
 				pid_id: undefined,
+				family_name: undefined,
+				given_name: undefined,
+				birth_date: undefined,
 				"id": holderDID,
 			},
 			"credentialStatus": {
-				"id": `${config.crl.url}#${(await CredentialStatusList.insert(userSession.familyName ?? "", userSession.personalIdentifier)).id}`,
+				"id": `${config.crl.url}#${(await CredentialStatusList.insert(userSession.family_name ?? "", userSession.personalIdentifier)).id}`,
 				"type": "CertificateRevocationList"
 			},
 			"credentialBranding": {

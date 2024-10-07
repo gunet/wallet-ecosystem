@@ -128,7 +128,7 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 			return;
 		}
 		authorizationServerState.personalIdentifier = personalIdentifier;
-		authorizationServerState.familyName = familyName;
+		authorizationServerState.family_name = familyName;
 
 		req.session.authenticationChain.vidAuthenticationComponent = {
 			personalIdentifier: personalIdentifier,
@@ -137,7 +137,7 @@ export class VIDAuthenticationComponent extends AuthenticationComponent {
 
 		console.log("Personal identifier = ", personalIdentifier)
 		req.authorizationServerState.personalIdentifier = personalIdentifier;
-		req.authorizationServerState.familyName = familyName;
+		req.authorizationServerState.family_name = familyName;
 
 		await AppDataSource.getRepository(AuthorizationServerState).save(authorizationServerState);
 		return res.redirect(this.protectedEndpoint);

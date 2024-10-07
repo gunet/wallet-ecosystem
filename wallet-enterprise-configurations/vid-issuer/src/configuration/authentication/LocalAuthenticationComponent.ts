@@ -58,12 +58,12 @@ export class LocalAuthenticationComponent extends AuthenticationComponent {
 		if (!req.session.authenticationChain?.localAuthenticationComponent?.username) {
 			return false;
 		}
-		const username = req.session.authenticationChain.localAuthenticationComponent.username;
-		if (!username || this.users.filter((u: any) => u.User == username).length != 1) return false;
+		// const username = req.session.authenticationChain.localAuthenticationComponent.username;
+		// if (!username || this.users.filter((u: any) => u.User == username).length != 1) return false;
 
-		const usersFound = this.users.filter((u: any) => u.User == username) as any;
-		req.authorizationServerState.personalIdentifier = usersFound[0].pid_id;
-		await AppDataSource.getRepository(AuthorizationServerState).save(req.authorizationServerState);
+		// const usersFound = this.users.filter((u: any) => u.User == username) as any;
+		// req.authorizationServerState.personalIdentifier = usersFound[0].pid_id;
+		// await AppDataSource.getRepository(AuthorizationServerState).save(req.authorizationServerState);
 		return true;
 	}
 
@@ -94,7 +94,9 @@ export class LocalAuthenticationComponent extends AuthenticationComponent {
 				username: username
 			};
 
-			req.authorizationServerState.personalIdentifier = (usersFound[0] as any).pid_id;
+			req.authorizationServerState.family_name = (usersFound[0] as any).family_name;
+			req.authorizationServerState.given_name = (usersFound[0] as any).given_name;
+			req.authorizationServerState.birth_date = new Date((usersFound[0] as any).birth_date).toISOString();
 			await AppDataSource.getRepository(AuthorizationServerState).save(req.authorizationServerState);
 			return res.redirect(this.protectedEndpoint);
 		}

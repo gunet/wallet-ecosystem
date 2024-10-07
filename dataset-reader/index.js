@@ -19,7 +19,7 @@ function parsePidData(filePath) {
 
   // Convert worksheet to JSON format
   const data = XLSX.utils.sheet_to_json(worksheet, {
-    defval: undefined,
+    defval: null,
     dateNF: 'd"/"m"/"yyyy'
     // skipHidden: true,
     // header: 0
@@ -32,7 +32,7 @@ function parsePidData(filePath) {
     row = Object.values(row)
     const obj = {};
     row.map((cell, index) => {
-      obj[headers[index]] = cell;  // Assign key-value pairs
+      obj[headers[index]] = String(cell).trim();  // Assign key-value pairs
     });
 
     return obj;
@@ -56,12 +56,19 @@ function parseEhicData(filePath) {
   const worksheet = workbook.Sheets[sheetName];
 
   // Convert worksheet to JSON format
-  const data = XLSX.utils.sheet_to_json(worksheet, {
-    defval: undefined,
+  let data = XLSX.utils.sheet_to_json(worksheet, {
+    defval: null,
     dateNF: 'd"/"m"/"yyyy'
     // skipHidden: true,
     // header: 0
   });
+
+	data = data.map((row) => {
+		Object.keys(row).map((k) => {
+			row[k] = String(row[k]).trim();
+		})
+		return row;
+	})
   return data;
 }
 
@@ -82,23 +89,24 @@ function parsePda1Data(filePath) {
 
   // Convert worksheet to JSON format
   const data = XLSX.utils.sheet_to_json(worksheet, {
-    defval: undefined,
+    defval: null,
     dateNF: 'd"/"m"/"yyyy'
     // skipHidden: true,
     // header: 0
   });
 
-  let headers = Object.values(data[0]).map((h) => h.trim());
+  let headers = Object.values(data[0]).map((h) => h);
 
-  const ncols = Object.keys(headers);
+	console.log("headers = ", headers)
+  // const ncols = Object.keys(headers);
 
 
   const result = data.slice(1).map(row => {
     row = Object.values(row)
-
+		console.log("all values", row)
     const obj = {};
     row.forEach((cell, index) => {
-      obj[headers[index]] = cell;  // Assign key-value pairs
+      obj[headers[index]] = String(cell).trim();  // Assign key-value pairs
     });
     return obj;
   });
